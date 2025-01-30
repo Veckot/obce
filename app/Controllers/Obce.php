@@ -21,7 +21,7 @@ class Obce extends BaseController
     private $okres;
     private $typ_so;
     private $ulice;
-
+    private $dataKraj;
     public function __construct()
     {
         $this->adresni_misto = new Adresni_misto();
@@ -31,13 +31,14 @@ class Obce extends BaseController
         $this->okres = new Okres();
         $this->typ_so = new Typ_so();
         $this->ulice = new Ulice();
+        $this->dataKraj['kraj'] = $this->kraj->join('okres','kraj.kod=okres.kraj','left')->where('kraj', 141)->findAll();
 
     }
     public function index()
     {
-        $dataKraj['kraj'] = $this->kraj->join('okres','kraj.kod=okres.kraj','left')->where('kraj', 141)->findAll();
-
-        return view('mainStranka', $dataKraj);
+        return view('mainStranka', $this->dataKraj);
     }
+
+
 
 }
