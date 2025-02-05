@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
         <!-- Brand Name -->
-        <a class="navbar-brand fw-bold text-primary" href="#">Obci Nigerie</a>
+        <a class="navbar-brand fw-bold text-primary" href="<?= base_url() ?>">Obci Nigerie</a>
 
         <!-- Navbar Toggler (for Mobile View) -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 

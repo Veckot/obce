@@ -3,6 +3,6 @@
 
 
 <h1>GEX</h1>
-<?php var_dump($kraj); ?>
+
 
 <?= $this->endSection(); ?>
