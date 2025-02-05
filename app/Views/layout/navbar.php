@@ -14,7 +14,7 @@
             <ul class="navbar-nav ms-auto">
                 <?php foreach ($kraj as $navitem): ?>
                     <li class="nav-item">
-                        <?= anchor("station_dataStranka/" . $navitem->kod, $navitem->nazev, ['class' => 'nav-link text-dark fw-semibold']); ?>
+                        <?= anchor("obceStranka/" . $navitem->kod, $navitem->nazev, ['class' => 'nav-link text-dark fw-semibold']); ?>
                     </li>
                 <?php endforeach; ?>
             </ul>

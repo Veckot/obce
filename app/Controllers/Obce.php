@@ -35,8 +35,16 @@ class Obce extends BaseController
 
     }
     public function index()
+{
+    return view('mainStranka', ['kraj' => $this->dataKraj['kraj']]);
+}
+    public function obceStranka($idOkres)
     {
-        return view('mainStranka', $this->dataKraj);
+        $dataObce['obec'] = $this->obec->join('okres','okres.kod=obec.okres','inner')->where('okres', $idOkres)->first();
+        $dataObce['kraj'] = $this->dataKraj['kraj'];
+        return view('obceStranka', $dataObce);
+
+        
     }
 
 
