@@ -3,27 +3,28 @@
 
 <div class="container my-5">
     <h1 class="mb-4">Okres <?=$okres->nazev ?> Obce:</h1>
-    
+
+    <class="mb-3">
+        <strong>show:</strong>
+        <?php for ($i = 1; $i <= 100; $i += 1): ?>
+            <a href="?perPage=<?= $i ?>" class="btn btn-primary btn-sm <?= ($perPage == $i) ? 'active' : '' ?>"><?= $i ?></a>
+        <?php endfor; ?>
+    </div>
+
     <?php
     $table = new \CodeIgniter\View\Table();
     $headers = array('Poradi', 'Nazev', 'Funny Pocet');
     $table->setHeading($headers);
-    $cislo = 0;
 
-    
     // Loop through each "obec" object
     foreach ($mista as $key => $row) {
-        $key++;
         $table->addRow(
-            $key,
+            $key + 1,
             $row->nazev,
             $row->pocet
         );
-        
-        
     }
-    
- 
+
     // Define Bootstrap Table Template
     $template = array(
         'table_open' => '<table class="table table-hover table-striped table-bordered">',
@@ -43,9 +44,12 @@
     );
 
     $table->setTemplate($template);
-
     echo $table->generate();
+
+    // Pagination Links
+    echo $pager->makeLinks($pager->getCurrentPage(), $perPage, $pager->getTotal());
     ?>
+
 </div>
 
 <?= $this->endSection(); ?>

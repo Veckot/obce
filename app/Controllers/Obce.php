@@ -22,6 +22,7 @@ class Obce extends BaseController
     private $ulice;
     private $dataKraj;
     private $dataOkres;
+    public $pageNum;
 
     public function __construct()
     {
@@ -32,17 +33,25 @@ class Obce extends BaseController
         $this->okres = new Okres();
         $this->typ_so = new Typ_so();
         $this->ulice = new Ulice();
+        $this->pageNum = 20;
         // Query to get data for 'kraj'
-        $this->dataKraj['kraj'] = $this->kraj->join('okres','kraj.kod=okres.kraj','left')->where('kraj', 141)->findAll();
+        $this->dataKraj['kraj'] = $this->kraj->join('okres', 'kraj.kod=okres.kraj', 'left')->where('kraj', 141)->findAll();
     }
 
     public function index()
     {
+        
         return view('mainStranka', ['kraj' => $this->dataKraj['kraj']]);
+    }
+    public function changeNum(): void
+    {
+        $this->pageNum++;
     }
 
     public function obceStranka($idOkres)
     {
+
+        $perPage = $this->request->getGet('perPage') ?? $this->pageNum;
         // Query to get 'obec' data for specific 'okres'
         $dataObce['obec'] = $this->okres
             ->join('obec', 'okres.kod = obec.okres', 'inner')
@@ -52,16 +61,21 @@ class Obce extends BaseController
         $dataObce['kraj'] = $this->dataKraj['kraj'];
         $dataObce['okres'] = $this->okres->find($idOkres);
 
-        //pocet adresnich mist
+        // Pocet mist
         $dataObce['mista'] = $this->okres->select('obec.nazev, Count(*) as pocet')
-        ->join('obec', 'okres.kod = obec.okres', 'inner')
-        ->join('cast_obce', 'obec.kod = cast_obce.obec', 'inner')
-        ->join('ulice', 'cast_obce.kod = ulice.cast_obce')
-        ->join('adresni_misto', 'ulice.kod = adresni_misto.ulice')
-        ->where('okres', $idOkres)
-        ->groupBy('obec.kod')
-        ->orderBy('pocet','desc')
-        ->findAll();
+            ->join('obec', 'okres.kod = obec.okres', 'inner')
+            ->join('cast_obce', 'obec.kod = cast_obce.obec', 'inner')
+            ->join('ulice', 'cast_obce.kod = ulice.cast_obce', 'inner')
+            ->join('adresni_misto', 'ulice.kod = adresni_misto.ulice', 'inner')
+            ->where('okres', $idOkres)
+            ->groupBy('obec.kod')
+            ->orderBy('pocet', 'desc')
+            ->paginate($perPage);
+
+        // Paginace
+        $dataObce["pager"] = $this->okres->pager;
+        $dataObce["perPage"] = $perPage;
+
         return view('obceStranka', $dataObce);
     }
 }
