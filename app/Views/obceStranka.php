@@ -2,24 +2,28 @@
 <?= $this->section("content"); ?>
 
 <div class="container my-5">
-    <h1 class="mb-4">Okres <?= $okres[0]->nazev?> Obce:</h1> <!-- Accessing the first object in the array -->
-
+    <h1 class="mb-4">Okres <?=$okres->nazev ?> Obce:</h1>
+    
     <?php
     $table = new \CodeIgniter\View\Table();
     $headers = array('Poradi', 'Nazev', 'Funny Pocet');
     $table->setHeading($headers);
-    $poradi = 1;
+    $cislo = 0;
 
     
     // Loop through each "obec" object
-    foreach ($obec as $row) {
+    foreach ($mista as $key => $row) {
+        $key++;
         $table->addRow(
-            $poradi,
-            $row->nazev
+            $key,
+            $row->nazev,
+            $row->pocet
         );
-        $poradi++;
+        
+        
     }
-
+    
+ 
     // Define Bootstrap Table Template
     $template = array(
         'table_open' => '<table class="table table-hover table-striped table-bordered">',

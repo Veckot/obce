@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Okres extends Model
 {
     protected $table            = 'okres';
-    protected $primaryKey       = 'kraj';
+    protected $primaryKey       = 'kod';
     protected $useAutoIncrement = true;
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;

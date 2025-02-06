@@ -46,13 +46,22 @@ class Obce extends BaseController
         // Query to get 'obec' data for specific 'okres'
         $dataObce['obec'] = $this->okres
             ->join('obec', 'okres.kod = obec.okres', 'inner')
-            ->where('okres', $idOkres)
-            ->asObject()  // Ensure we get objects
-            ->findAll();
+            ->where('okres', $idOkres)->findAll();
 
         // Pass data to the view
         $dataObce['kraj'] = $this->dataKraj['kraj'];
-        $dataObce['okres'] = $this->okres->where('kod', $idOkres)->findAll();
+        $dataObce['okres'] = $this->okres->find($idOkres);
+
+        //pocet adresnich mist
+        $dataObce['mista'] = $this->okres->select('obec.nazev, Count(*) as pocet')
+        ->join('obec', 'okres.kod = obec.okres', 'inner')
+        ->join('cast_obce', 'obec.kod = cast_obce.obec', 'inner')
+        ->join('ulice', 'cast_obce.kod = ulice.cast_obce')
+        ->join('adresni_misto', 'ulice.kod = adresni_misto.ulice')
+        ->where('okres', $idOkres)
+        ->groupBy('obec.kod')
+        ->orderBy('pocet','desc')
+        ->findAll();
         return view('obceStranka', $dataObce);
     }
 }
