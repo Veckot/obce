@@ -38,10 +38,35 @@ class Obce extends BaseController
         $this->dataKraj['kraj'] = $this->kraj->join('okres', 'kraj.kod=okres.kraj', 'left')->where('kraj', 141)->findAll();
     }
 
-    public function index()
+    public function index($funnyNum)
     {
-        
-        return view('mainStranka', ['kraj' => $this->dataKraj['kraj']]);
+        $perPage = $this->request->getGet('perPage') ?? $this->pageNum;
+
+        // Query to get 'obec' data for specific 'okres'
+        $dataKraj['obec'] = $this->okres
+            ->join('obec', 'okres.kod = obec.okres', 'inner')
+            ->where('okres', $funnyNum)->findAll();
+
+        // Pass data to the view
+        $dataKraj['kraj'] = $this->dataKraj['kraj'];
+        $dataKraj['okres'] = $this->okres->find($funnyNum);
+
+        // Pocet mist
+        $dataKraj['mista'] = $this->okres->select('obec.nazev, Count(*) as pocet')
+            ->join('obec', 'okres.kod = obec.okres', 'inner')
+            ->join('cast_obce', 'obec.kod = cast_obce.obec', 'inner')
+            ->join('ulice', 'cast_obce.kod = ulice.cast_obce', 'inner')
+            ->join('adresni_misto', 'ulice.kod = adresni_misto.ulice', 'inner')
+            ->where('kraj', $funnyNum)
+            ->groupBy('obec.kod')
+            ->orderBy('pocet', 'desc')
+            ->paginate($perPage);
+
+
+        $dataKraj["pager"] = $this->okres->pager;
+        $dataKraj["perPage"] = $perPage;
+
+        return view('mainStranka', $dataKraj);
     }
     public function changeNum(): void
     {

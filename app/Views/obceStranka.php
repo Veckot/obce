@@ -6,7 +6,7 @@
 
     <class="mb-3">
         <strong>show:</strong>
-        <?php for ($i = 1; $i <= 100; $i += 1): ?>
+        <?php for ($i = 10; $i <= 100; $i += 10): ?>
             <a href="?perPage=<?= $i ?>" class="btn btn-primary btn-sm <?= ($perPage == $i) ? 'active' : '' ?>"><?= $i ?></a>
         <?php endfor; ?>
     </div>
@@ -19,7 +19,7 @@
     // Loop through each "obec" object
     foreach ($mista as $key => $row) {
         $table->addRow(
-            $key + 1,
+            $pager->getCurrentPage() * $perPage - $perPage + $key + 1,
             $row->nazev,
             $row->pocet
         );
